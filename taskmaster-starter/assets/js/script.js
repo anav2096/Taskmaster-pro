@@ -9,11 +9,13 @@ var createTask = function(taskText, taskDate, taskList) {
   var taskP = $("<p>")
     .addClass("m-1")
     .text(taskText);
+    
+  
 
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
-
+  
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
 };
@@ -61,7 +63,7 @@ $("#task-form-modal").on("shown.bs.modal", function() {
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-primary").click(function(){
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -75,11 +77,63 @@ $("#task-form-modal .btn-primary").click(function() {
     // save in tasks array
     tasks.toDo.push({
       text: taskText,
-      date: taskDate
+      date: taskDate,
     });
 
     saveTasks();
   }
+  $(".list-group").on("click","p", function() {
+    var text = $(this)
+    .text()
+    .trim();
+  });
+    var textInput = $("<textarea>")
+    .addClass("form-control")
+    .val(text);
+  
+    var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-","");
+
+    var index = $(this)
+    .closest("list-group")
+    .index();
+
+    tasks[status][index].text = text;
+    saveTasks();
+
+  $(this).replaceWith.textInput.trigger("focus");
+
+$(".list-group").on("click", "span", function() {
+  var date = $(this)
+  .text()
+  .trim();
+  var dateInput = $("<input>")
+  .attr("type", "text")
+  .addclass("form-control")
+  .val(date);
+  $(this).replaceWith(dateInput);
+  dateInput.trigger("focus");
+});
+
+$(".list-group").on("blur", "input[type='text']", function(){
+  var date = $(this)
+  .val()
+  .trim();
+  var status = $(this)
+  .closest(".list-group")
+  .attr("id")
+  .replace("list-","");
+  var index = $(this)
+  .closest(".list-group-item")
+  .index();
+  tasks[status][index].date = date;
+  saveTasks();
+  var taskSpan = $("<span>")
+  .addClass("badge badge-primary badge-pill")
+  .text(date);
+  $(this).replaceWith(taskSpan);
 });
 
 // remove all tasks
@@ -94,4 +148,4 @@ $("#remove-tasks").on("click", function() {
 // load tasks for the first time
 loadTasks();
 
-
+});
